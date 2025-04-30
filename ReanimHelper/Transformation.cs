@@ -37,7 +37,7 @@ public static class Transformation
 			return $"Position: ({X}, {Y}), Scale: ({XScale}, {YScale}), Rotation: ({XRotation}, {YRotation}), Alpha: {Alpha}";
 		}
 
-		public static ReanimTransform FromReaminTransForm(TransForm tf)
+		public static ReanimTransform FromReaminTransform(TransForm tf)
 		{
 			return new ReanimTransform()
 			{
@@ -56,8 +56,7 @@ public static class Transformation
 			return new Matrix3x2
 			{
 				M11 = XScale * MathF.Cos(XRotation),
-				M12 = XScale * MathF.Sin(XRotation
-),
+				M12 = XScale * MathF.Sin(XRotation),
 				M21 = YScale * -MathF.Sin(YRotation),
 				M22 = YScale * MathF.Cos(YRotation),
 				M31 = X,
@@ -65,7 +64,7 @@ public static class Transformation
 			};
 		}
 
-		public Godot2DTransform ToPRSSA()
+		public Godot2DTransform ToGodot2DTransform()
 		{
 			return new Godot2DTransform()
 			{

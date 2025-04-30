@@ -72,14 +72,10 @@ public static class Utils
 			for (int j = 0; j < length; j++)
 			{
 				TransForm tf = track.TransForms[j];
-				string str;
 
-				str = data.ReadStringByInt32Head();
-				tf.Image = string.IsNullOrEmpty(str) ? null : str;
-				str = data.ReadStringByInt32Head();
-				tf.Font = string.IsNullOrEmpty(str) ? null : str;
-				str = data.ReadStringByInt32Head();
-				tf.Text = string.IsNullOrEmpty(str) ? null : str;
+				tf.Image = data.ReadStringByInt32Head();
+				tf.Font = data.ReadStringByInt32Head();
+				tf.Text = data.ReadStringByInt32Head();
 			}
 		}
 
@@ -96,9 +92,11 @@ public static class Utils
 		reader.BaseStream.Position += btyes;
 	}
 
-	public static string ReadStringByInt32Head(this BinaryReader reader)
+	public static string? ReadStringByInt32Head(this BinaryReader reader)
 	{
 		byte[] chars = reader.ReadBytes(reader.ReadInt32());
+		if (chars.Length == 0)
+			return null;
 		return Encoding.UTF8.GetString(chars);
 	}
 }

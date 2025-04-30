@@ -3,13 +3,13 @@ namespace ReanimHelper;
 public class Reanim
 {
 	public float Fps { get; set; }
-	public Track[] Tracks { get; set; }
+	public Track[]? Tracks { get; set; }
 }
 
 public class Track
 {
-	public string Name { get; set; }
-	public TransForm[] TransForms { get; set; }
+	public string? Name { get; set; }
+	public TransForm[]? TransForms { get; set; }
 }
 
 public class TransForm
