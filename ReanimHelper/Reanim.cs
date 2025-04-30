@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace ReanimHelper;
 
 public class Reanim
@@ -19,34 +17,23 @@ public class TransForm
 	/// <summary>
 	/// frame type, -1: empty, 0: keyframe
 	/// </summary>
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? Frame { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? Image { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? Alpha { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? X { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? Y { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? XScale { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public float? YScale { get; set; }
 
 	/// <summary>
 	/// degree
 	/// </summary>
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	public float? XTilt { get; set; }
+	public float? XRotation { get; set; }
 
 	/// <summary>
 	/// degree
 	/// </summary>
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	public float? YTilt { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	public float? YRotation { get; set; }
 	public string? Font { get; set; }
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? Text { get; set; }
 }

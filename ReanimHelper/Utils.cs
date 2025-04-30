@@ -12,16 +12,8 @@ public static class Utils
 
 		if (sourceData.ReadInt32() == -559022380)
 		{
-			// Console.WriteLine("Compresses file.");
 			int size = sourceData.ReadInt32();
-			// Console.WriteLine($"size: {size}");
-
 			using ZLibStream zLibStream = new ZLibStream(sourceData.BaseStream, CompressionMode.Decompress);
-
-			// using StreamWriter sw = new StreamWriter("test.bin", false);
-			// zLibStream.CopyTo(sw.BaseStream);
-			// return;
-
 			zLibStream.CopyTo(data.BaseStream);
 		}
 		else
@@ -34,9 +26,7 @@ public static class Utils
 		data.Skip(8);
 		int tracksNumber = data.ReadInt32();
 		reanim.Tracks = new Track[tracksNumber];
-		// Console.WriteLine($"tracks number: {tracksNumber}");
 		reanim.Fps = data.ReadSingle();
-		// Console.WriteLine($"fps: {reanim.Fps}");
 		data.Skip(4);
 		data.CheckInt32(0xC);
 
@@ -64,9 +54,9 @@ public static class Utils
 				f = data.ReadSingle();
 				tf.Y = f == -10000f ? null : f;
 				f = data.ReadSingle();
-				tf.XTilt = f == -10000f ? null : f;
+				tf.XRotation = f == -10000f ? null : f;
 				f = data.ReadSingle();
-				tf.YTilt = f == -10000f ? null : f;
+				tf.YRotation = f == -10000f ? null : f;
 				f = data.ReadSingle();
 				tf.XScale = f == -10000f ? null : f;
 				f = data.ReadSingle();
