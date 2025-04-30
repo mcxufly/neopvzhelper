@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReanimHelper", "ReanimHelper\ReanimHelper.csproj", "{99EB8F8B-004B-1355-2B33-026DEA4B2ED8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99EB8F8B-004B-1355-2B33-026DEA4B2ED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99EB8F8B-004B-1355-2B33-026DEA4B2ED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99EB8F8B-004B-1355-2B33-026DEA4B2ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99EB8F8B-004B-1355-2B33-026DEA4B2ED8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67E7AE69-F042-444D-B65B-378A31B6CA3A}
+	EndGlobalSection
+EndGlobal
