@@ -37,7 +37,7 @@ public static class Transformation
 			return $"Position: ({X}, {Y}), Scale: ({XScale}, {YScale}), Rotation: ({XRotation}, {YRotation}), Alpha: {Alpha}";
 		}
 
-		public static ReanimTransform FromReaminTransform(TransForm tf)
+		public static ReanimTransform FromReaminTransform(Transform tf)
 		{
 			return new ReanimTransform()
 			{
@@ -126,5 +126,10 @@ public static class Transformation
 				M32 = Y
 			};
 		}
+	}
+
+	public static string GodotTransform2DString(Matrix3x2 m)
+	{
+		return $"Transform2D({m.M11},{m.M12},{m.M21},{m.M22},{m.M31},{m.M32})";
 	}
 }

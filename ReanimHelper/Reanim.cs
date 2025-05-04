@@ -9,10 +9,10 @@ public class Reanim
 public class Track
 {
 	public string? Name { get; set; }
-	public TransForm[]? TransForms { get; set; }
+	public Transform[]? TransForms { get; set; }
 }
 
-public class TransForm
+public class Transform
 {
 	/// <summary>
 	/// frame type, -1: empty, 0: keyframe

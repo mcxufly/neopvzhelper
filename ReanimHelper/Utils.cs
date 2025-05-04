@@ -34,7 +34,7 @@ public static class Utils
 		{
 			data.Skip(8);
 			Track track = new Track();
-			track.TransForms = new TransForm[data.ReadInt32()];
+			track.TransForms = new Transform[data.ReadInt32()];
 			reanim.Tracks[i] = track;
 		}
 
@@ -46,7 +46,7 @@ public static class Utils
 			int length = track.TransForms.Length;
 			for (int j = 0; j < length; j++)
 			{
-				TransForm tf = new TransForm();
+				Transform tf = new Transform();
 				float f;
 
 				f = data.ReadSingle();
@@ -71,7 +71,7 @@ public static class Utils
 
 			for (int j = 0; j < length; j++)
 			{
-				TransForm tf = track.TransForms[j];
+				Transform tf = track.TransForms[j];
 
 				tf.Image = data.ReadStringByInt32Head();
 				tf.Font = data.ReadStringByInt32Head();
