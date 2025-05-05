@@ -22,11 +22,12 @@ public static class Utils
 			sourceData.BaseStream.CopyTo(data.BaseStream);
 		}
 
-		Reanim reanim = new Reanim();
+		
 		data.BaseStream.Position = 0;
 		data.Skip(8);
 		int tracksNumber = data.ReadInt32();
-		reanim.Tracks = new Track[tracksNumber];
+		Reanim reanim = new Reanim(tracksNumber);
+		// reanim.Tracks = new Track[tracksNumber];
 		reanim.Fps = data.ReadSingle();
 		data.Skip(4);
 		data.CheckInt32(0xC);
@@ -34,17 +35,17 @@ public static class Utils
 		for (int i = 0; i < tracksNumber; i++)
 		{
 			data.Skip(8);
-			Track track = new Track();
-			track.TransForms = new Transform[data.ReadInt32()];
+			Track track = new Track(data.ReadInt32());
+			// track.Transforms = new Transform[data.ReadInt32()];
 			reanim.Tracks[i] = track;
 		}
 
 		for (int i = 0; i < tracksNumber; i++)
 		{
 			Track track = reanim.Tracks[i];
-			track.Name = data.ReadStringByInt32Head();
+			track.Name = data.ReadStringByInt32Head() ?? "";
 			data.CheckInt32(0x2C);
-			int length = track.TransForms.Length;
+			int length = track.Transforms.Length;
 			for (int j = 0; j < length; j++)
 			{
 				Transform tf = new Transform();
@@ -67,12 +68,12 @@ public static class Utils
 				f = data.ReadSingle();
 				tf.Alpha = f == -10000f ? null : f;
 				data.Skip(12);
-				track.TransForms[j] = tf;
+				track.Transforms[j] = tf;
 			}
 
 			for (int j = 0; j < length; j++)
 			{
-				Transform tf = track.TransForms[j];
+				Transform tf = track.Transforms[j];
 
 				tf.Image = data.ReadStringByInt32Head();
 				tf.Font = data.ReadStringByInt32Head();
@@ -138,7 +139,7 @@ public static class Utils
 	public static void ConvertAnimation(Reanim reanim, StreamWriter outStream)
 	{
 		outStream.WriteLine($"FPS: {reanim.Fps}");
-		outStream.WriteLine($"Length: {reanim.Tracks[0].TransForms.Length}");
+		outStream.WriteLine($"Length: {reanim.Tracks[0].Transforms.Length}");
 		outStream.WriteLine();
 
 		foreach (Track track in reanim.Tracks)
@@ -146,7 +147,7 @@ public static class Utils
 			string name = track.Name;
 			bool isControl = true;
 
-			foreach (Transform tf in track.TransForms)
+			foreach (Transform tf in track.Transforms)
 			{
 				if (!tf.IsEmptyTransform())
 				{
@@ -158,15 +159,15 @@ public static class Utils
 			if (isControl)
 			{
 				int start = -1;
-				int end = track.TransForms.Length;
+				int end = track.Transforms.Length;
 
-				for (int i = 0; i < track.TransForms.Length; i++)
+				for (int i = 0; i < track.Transforms.Length; i++)
 				{
-					if (track.TransForms[i].Frame == 0)
+					if (track.Transforms[i].Frame == 0)
 					{
 						start = i;
 					}
-					else if (track.TransForms[i].Frame == -1)
+					else if (track.Transforms[i].Frame == -1)
 					{
 						if (start != -1)
 						{
@@ -180,7 +181,7 @@ public static class Utils
 			}
 			else
 			{
-				Transform[] list = Utils.PrepareTransforms(track.TransForms);
+				Transform[] list = Utils.PrepareTransforms(track.Transforms);
 				List<string> sprites = new List<string>();
 				List<float> frames = new List<float>();
 				List<float> times = new List<float>();
