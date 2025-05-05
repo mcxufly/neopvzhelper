@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using static ReanimHelper.Transformation;
 
 namespace ReanimHelper;
 
@@ -98,5 +99,139 @@ public static class Utils
 		if (chars.Length == 0)
 			return null;
 		return Encoding.UTF8.GetString(chars);
+	}
+
+	public static Transform[] PrepareTransforms(Transform[] transforms)
+	{
+		List<Transform> newTransforms = new List<Transform>();
+
+		for (int i = 0; i < transforms.Length; i++)
+		{
+			Transform tf = transforms[i];
+			if (tf.IsEmptyTransform())
+			{
+				continue;
+			}
+
+			if (tf.Frame == -1)
+			{
+				tf.Frame = -i;
+				newTransforms.Add(tf);
+				continue;
+			}
+
+			Transform prevTf = i == 0 ? tf : transforms[i - 1];
+			tf.Frame = i;
+			tf.Alpha ??= prevTf.Alpha;
+			tf.X ??= prevTf.X;
+			tf.Y ??= prevTf.Y;
+			tf.XScale ??= prevTf.XScale;
+			tf.YScale ??= prevTf.YScale;
+			tf.XRotation ??= prevTf.XRotation;
+			tf.YRotation ??= prevTf.YRotation;
+			newTransforms.Add(tf);
+		}
+
+		return newTransforms.ToArray();
+	}
+
+	public static void ConvertAnimation(Reanim reanim, StreamWriter outStream)
+	{
+		outStream.WriteLine($"FPS: {reanim.Fps}");
+		outStream.WriteLine($"Length: {reanim.Tracks[0].TransForms.Length}");
+		outStream.WriteLine();
+
+		foreach (Track track in reanim.Tracks)
+		{
+			string name = track.Name;
+			bool isControl = true;
+
+			foreach (Transform tf in track.TransForms)
+			{
+				if (!tf.IsEmptyTransform())
+				{
+					isControl = false;
+					break;
+				}
+			}
+
+			if (isControl)
+			{
+				int start = -1;
+				int end = track.TransForms.Length;
+
+				for (int i = 0; i < track.TransForms.Length; i++)
+				{
+					if (track.TransForms[i].Frame == 0)
+					{
+						start = i;
+					}
+					else if (track.TransForms[i].Frame == -1)
+					{
+						if (start != -1)
+						{
+							end = i;
+							break;
+						}
+					}
+				}
+				outStream.WriteLine($"ControlTrack: {name}\n\tstart: {(start == -1 ? 0 : start)}, end: {end}");
+				outStream.WriteLine();
+			}
+			else
+			{
+				Transform[] list = Utils.PrepareTransforms(track.TransForms);
+				List<string> sprites = new List<string>();
+				List<float> frames = new List<float>();
+				List<float> times = new List<float>();
+				List<int> transitions = new List<int>();
+				List<string> values = new List<string>();
+				List<string> fonts = new List<string>();
+				List<string> texts = new List<string>();
+
+				foreach (Transform tf in list)
+				{
+					if (tf.Image != null)
+					{
+						sprites.Add(tf.Image + $" {tf.Frame}");
+					}
+					if (tf.Font != null)
+					{
+						fonts.Add(tf.Font + $" {tf.Frame}");
+					}
+					if (tf.Text != null)
+					{
+						texts.Add(tf.Text + $" {tf.Frame}");
+					}
+
+					ReanimTransform rt = ReanimTransform.FromReaminTransform(tf);
+					frames.Add(tf.Frame ?? 0);
+					times.Add((tf.Frame ?? 0) * 1 / reanim.Fps);
+					transitions.Add(1);
+					values.Add(GodotTransform2DString(rt.ToTransform2D()));
+				}
+
+				outStream.WriteLine($"Track: {name}");
+				outStream.WriteLine($"sprites: {string.Join(", ", sprites)}");
+				outStream.WriteLine($"frames: {string.Join(", ", frames)}");
+
+				outStream.WriteLine("{");
+				outStream.WriteLine($"\"times\": PackedFloat32Array({string.Join(", ", times)}),");
+				outStream.WriteLine($"\"transitions\": PackedFloat32Array({string.Join(", ", transitions)}),");
+				outStream.WriteLine("\"update\": 0,");
+				outStream.WriteLine($"\"values\": [{string.Join(", ", values)}]");
+				outStream.WriteLine("}");
+
+				if (fonts.Count != 0)
+				{
+					outStream.WriteLine($"fonts: {string.Join(", ", fonts)}");
+				}
+				if (texts.Count != 0)
+				{
+					outStream.WriteLine($"texts: {string.Join(", ", texts)}");
+				}
+				outStream.WriteLine();
+			}
+		}
 	}
 }

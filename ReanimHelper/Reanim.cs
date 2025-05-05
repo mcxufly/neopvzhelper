@@ -36,4 +36,33 @@ public class Transform
 	public float? YRotation { get; set; }
 	public string? Font { get; set; }
 	public string? Text { get; set; }
+
+	public bool IsNullTransform()
+	{
+		return Frame == null &&
+			   Image == null &&
+			   Alpha == null &&
+			   X == null &&
+			   Y == null &&
+			   XScale == null &&
+			   YScale == null &&
+			   XRotation == null &&
+			   YRotation == null &&
+			   Font == null &&
+			   Text == null;
+	}
+
+	public bool IsEmptyTransform()
+	{
+		return Image == null &&
+			   Alpha == null &&
+			   X == null &&
+			   Y == null &&
+			   XScale == null &&
+			   YScale == null &&
+			   XRotation == null &&
+			   YRotation == null &&
+			   Font == null &&
+			   Text == null;
+	}
 }
