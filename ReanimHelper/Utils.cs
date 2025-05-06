@@ -1,3 +1,4 @@
+using System.Formats.Tar;
 using System.IO.Compression;
 using System.Text;
 using static ReanimHelper.Transformation;
@@ -22,7 +23,7 @@ public static class Utils
 			sourceData.BaseStream.CopyTo(data.BaseStream);
 		}
 
-		
+
 		data.BaseStream.Position = 0;
 		data.Skip(8);
 		int tracksNumber = data.ReadInt32();
@@ -102,14 +103,30 @@ public static class Utils
 		return Encoding.UTF8.GetString(chars);
 	}
 
-	public static Transform[] PrepareTransforms(Transform[] transforms)
+	public static List<Transform> PrepareTransforms(Transform[] transforms)
 	{
 		List<Transform> newTransforms = new List<Transform>();
+		bool start = true;
+		bool end = false;
 
 		for (int i = 0; i < transforms.Length; i++)
 		{
 			Transform tf = transforms[i];
-			if (tf.IsEmptyTransform())
+
+			if (tf.Frame == -1)
+			{
+				start = false;
+				end = true;
+
+				newTransforms.Add(tf);
+			}
+			else if (tf.Frame == 0)
+			{
+				start = true;
+				end = false;
+			}
+
+			if (end)
 			{
 				continue;
 			}
@@ -133,7 +150,7 @@ public static class Utils
 			newTransforms.Add(tf);
 		}
 
-		return newTransforms.ToArray();
+		return newTransforms;
 	}
 
 	public static void ConvertAnimation(Reanim reanim, StreamWriter outStream)
@@ -181,7 +198,7 @@ public static class Utils
 			}
 			else
 			{
-				Transform[] list = Utils.PrepareTransforms(track.Transforms);
+				List<Transform> list = PrepareTransforms(track.Transforms);
 				List<string> sprites = new List<string>();
 				List<float> frames = new List<float>();
 				List<float> times = new List<float>();
@@ -192,6 +209,11 @@ public static class Utils
 
 				foreach (Transform tf in list)
 				{
+					if (tf.Frame < 0)
+					{
+						continue;
+					}
+
 					if (tf.Image != null)
 					{
 						sprites.Add(tf.Image + $" {tf.Frame}");
