@@ -135,7 +135,7 @@ public static class Utils
 		for (int i = 0; i < transforms.Length; i++)
 		{
 			Transform transform = transforms[i];
-			if (transform.Frame > 0)
+			if (transform.Frame >= 0)
 			{
 				newTransforms.Add(transform);
 			}
@@ -160,6 +160,7 @@ public static class Utils
 			List<string> values = new List<string>();
 			List<string> fonts = new List<string>();
 			List<string> texts = new List<string>();
+			List<string> colors = new List<string>();
 
 			foreach (Transform tf in list)
 			{
@@ -186,6 +187,10 @@ public static class Utils
 				times.Add((tf.Frame ?? 0) * 1 / reanim.Fps);
 				transitions.Add(1);
 				values.Add(GodotTransform2DString(rt.ToTransform2D()));
+				if (tf.Alpha != null)
+				{
+					colors.Add($"Color(1, 1, 1, {tf.Alpha ?? 0})");
+				}
 			}
 
 			outStream.WriteLine($"Track: {track.Name}");
@@ -198,6 +203,16 @@ public static class Utils
 			outStream.WriteLine("\"update\": 0,");
 			outStream.WriteLine($"\"values\": [{string.Join(", ", values)}]");
 			outStream.WriteLine("}");
+
+			if (colors.Count != 0)
+			{
+				outStream.WriteLine("{");
+				outStream.WriteLine($"\"times\": PackedFloat32Array({string.Join(", ", times)}),");
+				outStream.WriteLine($"\"transitions\": PackedFloat32Array({string.Join(", ", transitions)}),");
+				outStream.WriteLine("\"update\": 0,");
+				outStream.WriteLine($"\"values\": [{string.Join(", ", colors)}]");
+				outStream.WriteLine("}");
+			}
 
 			if (fonts.Count != 0)
 			{
